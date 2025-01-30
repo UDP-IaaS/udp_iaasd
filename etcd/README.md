@@ -1,7 +1,5 @@
 # etcd Client Package
 
-A thread-safe etcd client wrapper for Go, providing simplified interactions with etcd clusters. This package manages connection lifecycle, endpoint updates, and basic CRUD operations.
-
 ## Usage Guide
 
 ### Initialization
@@ -91,39 +89,6 @@ type EtcdClient struct {
     endpoints  []string
 }
 ```
-
-### Connection Workflow
-
-1. **Initial Connect**: Established during first `GetClient()` call
-2. **Reconnection**:
-   * Closes old connections atomically
-   * Creates new client instance on endpoint changes
-3. **Timeouts**: 5-second dial timeout for connection attempts
-
-### Endpoint Management
-
-* **Validation**:
-   * Rejects empty endpoint lists
-   * Prevents removal of last endpoint
-* **Update Process**:
-   1. Create new client with updated endpoints
-   2. Close old connection
-   3. Swap client reference atomically
-
-### Concurrency Model
-
-* **Write Operations** (`UpdateEndpoints`, `RemoveEndpoint`):
-   * Use full mutex lock
-   * Block all access during configuration changes
-* **Read Operations** (`Get`, `Put`, `Delete`):
-   * Use read locks (RLock)
-   * Allow concurrent read operations
-
-### Error Handling
-
-* **Connection Errors**: Fatal on initial connection failure
-* **Runtime Errors**: Returned as normal error values
-* **Validation**: Prevents invalid endpoint configurations
 
 ## Maintenance Notes
 
